@@ -1,0 +1,2822 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIIT Mart - Student E-commerce Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Dark Mode Variables */
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+            --card-bg: #ffffff;
+        }
+
+        body.dark-mode {
+            --bg-primary: #111827;
+            --bg-secondary: #1f2937;
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --border-color: #374151;
+            --card-bg: #1f2937;
+        }
+
+        body.dark-mode {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .bg-primary {
+            background-color: var(--bg-primary);
+        }
+
+        .bg-secondary {
+            background-color: var(--bg-secondary);
+        }
+
+        .text-primary {
+            color: var(--text-primary);
+        }
+
+        .text-secondary {
+            color: var(--text-secondary);
+        }
+
+        .border-color {
+            border-color: var(--border-color);
+        }
+
+        .card-bg {
+            background-color: var(--card-bg);
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: var(--card-bg);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(102, 126, 234, 0.2);
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+            overflow-y: auto;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: 3% auto;
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            animation: slideDown 0.3s ease;
+            color: var(--text-primary);
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .product-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 2000;
+            animation: slideInRight 0.3s ease;
+        }
+
+        .toast.error {
+            background: #ef4444;
+        }
+
+        .toast.info {
+            background: #3b82f6;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .category-chip {
+            display: inline-block;
+            padding: 8px 16px;
+            background: white;
+            border-radius: 20px;
+            margin: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        body.dark-mode .category-chip {
+            background: #374151;
+            color: #f9fafb;
+        }
+
+        .category-chip:hover,
+        .category-chip.active {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .role-card {
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: var(--card-bg);
+        }
+
+        .role-card:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .role-card.selected {
+            border-color: #667eea;
+            background: #f3f4f6;
+        }
+
+        body.dark-mode .role-card.selected {
+            background: #374151;
+        }
+
+        .image-upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .image-upload-area:hover {
+            border-color: #667eea;
+            background: #f9fafb;
+        }
+
+        body.dark-mode .image-upload-area {
+            border-color: #4b5563;
+        }
+
+        body.dark-mode .image-upload-area:hover {
+            background: #374151;
+        }
+
+        .image-preview {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .image-preview img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+        }
+
+        .required::after {
+            content: " *";
+            color: red;
+        }
+
+        /* Dropdown Menu */
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 10px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            min-width: 250px;
+            display: none;
+            z-index: 1000;
+            border: 1px solid var(--border-color);
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .dropdown-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: #f3f4f6;
+        }
+
+        body.dark-mode .dropdown-item:hover {
+            background: #374151;
+        }
+
+        /* Notification Panel */
+        .notification-panel {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 10px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 350px;
+            max-height: 500px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+            border: 1px solid var(--border-color);
+        }
+
+        .notification-panel.show {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .notification-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .notification-item:hover {
+            background: #f3f4f6;
+        }
+
+        body.dark-mode .notification-item:hover {
+            background: #374151;
+        }
+
+        .notification-item.unread {
+            background: #eff6ff;
+        }
+
+        body.dark-mode .notification-item.unread {
+            background: #1e3a5f;
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            width: 60px;
+            height: 30px;
+            background: #e5e7eb;
+            border-radius: 15px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        body.dark-mode .dark-mode-toggle {
+            background: #667eea;
+        }
+
+        .dark-mode-toggle::before {
+            content: '☀️';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        body.dark-mode .dark-mode-toggle::before {
+            content: '🌙';
+            transform: translateX(30px);
+        }
+
+        /* Input Styles */
+        input,
+        select,
+        textarea {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #667eea;
+            outline: none;
+            ring: 2px;
+            ring-color: #667eea;
+        }
+
+        /* Order Status Badge */
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-seller-contacted {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-seller-delivered-to-admin {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .status-buyer-notified {
+            background: #fce7f3;
+            color: #831843;
+        }
+
+        .status-completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+
+    <!-- Navigation Bar -->
+    <nav class="bg-white dark:bg-gray-900 shadow-lg sticky top-0 z-50 card-bg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="handleLogoClick()">
+                    <div class="text-3xl">🎓</div>
+                    <span class="text-2xl font-bold"
+                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                        CampusMart
+                    </span>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="hidden md:flex flex-1 max-w-xl mx-8">
+                    <div class="relative w-full">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="searchInput" placeholder="Search products, services, or sellers..."
+                            class="w-full pl-10 pr-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
+                            onkeyup="searchProducts()">
+                    </div>
+                </div>
+
+                <!-- Right Side Icons -->
+                <div class="flex items-center gap-6">
+                    <!-- Dark Mode Toggle -->
+                    <div class="dark-mode-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode"></div>
+
+                    <div id="loggedOutNav" class="flex items-center gap-4">
+                        <button onclick="openLoginModal()"
+                            class="text-gray-700 hover:text-purple-600 font-medium text-primary">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Login
+                        </button>
+                        <button onclick="openRegisterModal()" class="btn-primary">
+                            Sign Up
+                        </button>
+                    </div>
+
+                    <div id="loggedInNav" class="hidden items-center gap-6">
+                        <!-- Wishlist -->
+                        <div class="relative cursor-pointer" onclick="openWishlist()">
+                            <i class="far fa-heart text-2xl text-gray-700 hover:text-red-500 transition-colors"></i>
+                            <span class="notification-badge" id="wishlistCount">0</span>
+                        </div>
+
+                        <!-- Notifications -->
+                        <div class="relative">
+                            <div class="cursor-pointer" onclick="toggleNotifications()">
+                                <i class="fas fa-bell text-2xl text-gray-700 hover:text-purple-600 text-primary"></i>
+                                <span class="notification-badge" id="notificationCount">0</span>
+                            </div>
+
+                            <!-- Notification Panel -->
+                            <div id="notificationPanel" class="notification-panel">
+                                <div class="p-4 border-b border-color">
+                                    <h3 class="font-bold text-lg">Notifications</h3>
+                                </div>
+                                <div id="notificationList">
+                                    <!-- Notifications will be dynamically added -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cart -->
+                        <div class="relative cursor-pointer" onclick="openCart()">
+                            <i
+                                class="fas fa-shopping-cart text-2xl text-gray-700 hover:text-purple-600 text-primary"></i>
+                            <span class="notification-badge" id="cartCount">0</span>
+                        </div>
+
+                        <!-- User Menu -->
+                        <div class="relative">
+                            <div class="hidden md:flex items-center gap-3 cursor-pointer" onclick="toggleUserMenu()">
+                                <img id="userAvatar" src="" class="w-10 h-10 rounded-full border-2 border-purple-600">
+                                <div>
+                                    <div class="font-semibold text-sm text-primary" id="userName">User</div>
+                                    <div class="text-xs text-secondary" id="userRole">Student</div>
+                                </div>
+                                <i class="fas fa-chevron-down text-sm text-secondary"></i>
+                            </div>
+
+                            <!-- User Dropdown Menu -->
+                            <div id="userMenu" class="dropdown-menu">
+                                <div class="p-4 border-b border-color">
+                                    <div class="font-bold text-primary" id="menuUserName">User</div>
+                                    <div class="text-sm text-secondary" id="menuUserEmail">user@college.edu</div>
+                                </div>
+                                <div class="dropdown-item" onclick="openDashboard()">
+                                    <i class="fas fa-tachometer-alt text-purple-600"></i>
+                                    <span>Dashboard</span>
+                                </div>
+                                <div class="dropdown-item" onclick="openMyOrders()">
+                                    <i class="fas fa-shopping-bag text-blue-600"></i>
+                                    <span>My Orders</span>
+                                </div>
+                                <div class="dropdown-item" onclick="openMyProducts()">
+                                    <i class="fas fa-box text-green-600"></i>
+                                    <span>My Products</span>
+                                </div>
+                                <div class="dropdown-item" onclick="openWishlist()">
+                                    <i class="fas fa-heart text-red-600"></i>
+                                    <span>Wishlist</span>
+                                </div>
+                                <div class="dropdown-item" onclick="openSettings()">
+                                    <i class="fas fa-cog text-gray-600"></i>
+                                    <span>Settings</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn-primary hidden lg:block" onclick="openSellModal()">
+                            + Sell Product
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg text-white py-20">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h1 class="text-5xl font-bold mb-6 leading-tight">
+                        Buy & Sell Within Your <span class="text-yellow-300">Campus</span> 🎓
+                    </h1>
+                    <p class="text-xl mb-8 text-white/90">
+                        Your trusted student marketplace. Books, electronics, services, and more - all from verified
+                        college students.
+                    </p>
+
+                    <div class="flex gap-4 mb-12">
+                        <button onclick="scrollToProducts()"
+                            class="bg-white text-purple-600 px-8 py-4 rounded-lg font-bold hover:scale-105 transition">
+                            Browse Products
+                        </button>
+                        <button onclick="openSellModal()"
+                            class="border-2 border-white px-8 py-4 rounded-lg font-bold hover:bg-white hover:text-purple-600 transition">
+                            Start Selling
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-8">
+                        <div>
+                            <div class="text-3xl font-bold">10K+</div>
+                            <div class="text-white/80">Students</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold">50K+</div>
+                            <div class="text-white/80">Products</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold">98%</div>
+                            <div class="text-white/80">Satisfaction</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hidden md:block">
+                    <div class="text-9xl text-center">🛒📱💼</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="py-8 bg-white shadow-sm card-bg">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="flex flex-wrap justify-center">
+                <span class="category-chip active" onclick="filterCategory('all', event)">🔥 All</span>
+                <span class="category-chip" onclick="filterCategory('electronics', event)">💻 Electronics</span>
+                <span class="category-chip" onclick="filterCategory('books', event)">📚 Books & Notes</span>
+                <span class="category-chip" onclick="filterCategory('fashion', event)">👕 Fashion</span>
+                <span class="category-chip" onclick="filterCategory('furniture', event)">🪑 Furniture</span>
+                <span class="category-chip" onclick="filterCategory('services', event)">🛠️ Services</span>
+                <span class="category-chip" onclick="filterCategory('sports', event)">⚽ Sports</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="max-w-7xl mx-auto px-4 py-12" id="productsSection">
+        <div class="flex items-center gap-3 mb-8">
+            <i class="fas fa-fire text-3xl text-orange-500"></i>
+            <h2 class="text-3xl font-bold text-primary">Trending on Campus</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6" id="products-container">
+            <!-- Product Cards will be dynamically generated -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                        <span class="text-3xl">🎓</span> CampusMart
+                    </h3>
+                    <p class="text-gray-400">Your trusted campus marketplace for buying and selling within college
+                        community.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white">About Us</a></li>
+                        <li><a href="#" class="hover:text-white">How It Works</a></li>
+                        <li><a href="#" class="hover:text-white">Safety Tips</a></li>
+                        <li><a href="#" class="hover:text-white">Seller Academy</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Categories</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white">Electronics</a></li>
+                        <li><a href="#" class="hover:text-white">Books & Notes</a></li>
+                        <li><a href="#" class="hover:text-white">Services</a></li>
+                        <li><a href="#" class="hover:text-white">Fashion</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Contact</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><i class="fas fa-envelope mr-2"></i> support@campusmart.com</li>
+                        <li><i class="fas fa-phone mr-2"></i> +91 98765 43210</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 pt-6 text-center text-gray-400">
+                <p>&copy; 2025 CampusMart. All rights reserved. | Made with ❤️ by Students, for Students</p>
+                <!-- Admin Portal Link Removed -->
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">🔐 Login to CampusMart</h2>
+                <button onclick="closeLoginModal()" class="text-2xl hover:text-red-500">&times;</button>
+            </div>
+
+            <!-- Role Selection for Login -->
+            <div class="mb-6">
+                <label class="block font-semibold mb-3">Login As:</label>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="role-card border-2 rounded-lg p-4 text-center"
+                        onclick="selectLoginRole('buyer', event)">
+                        <div class="text-3xl mb-2">🛒</div>
+                        <div class="font-bold text-sm">Buyer</div>
+                    </div>
+                    <div class="role-card border-2 rounded-lg p-4 text-center"
+                        onclick="selectLoginRole('seller', event)">
+                        <div class="text-3xl mb-2">💼</div>
+                        <div class="font-bold text-sm">Seller</div>
+                    </div>
+                </div>
+                <input type="hidden" id="loginRole" required>
+            </div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <!-- Regular Login Fields -->
+                <div id="regularLoginFields">
+                    <div class="mb-4">
+                        <label class="block font-semibold mb-2 required">Roll Number</label>
+                        <input type="text" id="loginRollNumber" required
+                            class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
+                            placeholder="e.g., 21CS001">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block font-semibold mb-2 required">Phone Number</label>
+                        <input type="tel" id="loginPhone" required pattern="[0-9]{10}"
+                            class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
+                            placeholder="10 digit mobile number">
+                    </div>
+
+                    <div class="mb-6 relative">
+                        <label class="block font-semibold mb-2 required">Password</label>
+                        <input type="password" id="loginPassword" required
+                            class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
+                            placeholder="Enter your password">
+                        <i class="fas fa-eye absolute right-4 top-10 cursor-pointer text-gray-500"
+                            onclick="togglePassword('loginPassword', this)"></i>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full btn-primary mb-4">
+                    Login
+                </button>
+
+                <p class="text-center text-secondary">
+                    Don't have an account?
+                    <button type="button" onclick="closeLoginModal(); openRegisterModal();"
+                        class="text-purple-600 font-bold hover:underline">
+                        Sign Up
+                    </button>
+                </p>
+                <p class="text-center mt-2">
+                    <button type="button" onclick="closeLoginModal(); openForgotPassword();"
+                        class="text-sm text-gray-500 hover:text-purple-600">
+                        Forgot Password?
+                    </button>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">📝 Register on CampusMart</h2>
+                <button onclick="closeRegisterModal()" class="text-2xl hover:text-red-500">&times;</button>
+            </div>
+
+            <!-- Role Selection -->
+            <div class="mb-6">
+                <label class="block font-semibold mb-3 required">Select Your Role</label>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="role-card border-2 rounded-lg p-4 text-center" onclick="selectRole('buyer', event)">
+                        <div class="text-3xl mb-2">🛒</div>
+                        <div class="font-bold">Buyer</div>
+                        <div class="text-xs text-secondary mt-1">Buy products</div>
+                    </div>
+                    <div class="role-card border-2 rounded-lg p-4 text-center" onclick="selectRole('seller', event)">
+                        <div class="text-3xl mb-2">💼</div>
+                        <div class="font-bold">Seller</div>
+                        <div class="text-xs text-secondary mt-1">Sell products</div>
+                    </div>
+                </div>
+                <input type="hidden" id="selectedRole" required>
+            </div>
+
+            <!-- Admin Secret Code Field -->
+            <div id="adminSecretRegField" class="mb-4" style="display: none;">
+                <label class="block font-semibold mb-2 required">Admin Secret Code</label>
+                <input type="password" id="regAdminSecret"
+                    class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
+                    placeholder="Enter admin secret code to register">
+                <p class="text-xs text-red-500 mt-1">⚠️ Only authorized admins have this code</p>
+            </div>
+
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block font-semibold mb-2 required">Full Name</label>
+                        <input type="text" id="regName" required
+                            class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
+                            placeholder="John Doe">
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold mb-2 required">Roll Number</label>
+                        <input type="text" id="regRollNumber" required
+                            class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
+                            placeholder="21CS001">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block font-semibold mb-2 required">Branch</label>
+                        <select id="regBranch" required
+                            class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none">
+                            <option value="">Select Branch</option>
+                            <option value="CSE">Computer Science (CSE)</option>
+                            <option value="ECE">Electronics (ECE)</option>
+                            <option value="EEE">Electrical (EEE)</option>
+                            <option value="ME">Mechanical (ME)</option>
+                            <option value="CE">Civil (CE)</option>
+                            <option value="IT">Information Technology (IT)</option>
+                            <option value="MBA">MBA</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold mb-2 required">Year</label>
+                        <select id="regYear" required
+                            class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none">
+                            <option value="">Select Year</option>
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block font-semibold mb-2 required">Phone Number</label>
+                    <input type="tel" id="regPhone" required pattern="[0-9]{10}"
+                        class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
+                        placeholder="9876543210">
+                    <p class="text-xs text-secondary mt-1">10 digit mobile number</p>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block font-semibold mb-2">Email (Optional)</label>
+                    <input type="email" id="regEmail"
+                        class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
+                        placeholder="john@college.edu">
+                </div>
+
+                <div class="mb-6 relative">
+                    <label class="block font-semibold mb-2 required">Password</label>
+                    <input type="password" id="regPassword" required minlength="6"
+                        class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
+                        placeholder="Minimum 6 characters">
+                    <i class="fas fa-eye absolute right-4 top-10 cursor-pointer text-gray-500"
+                        onclick="togglePassword('regPassword', this)"></i>
+                </div>
+
+                <button type="submit" class="w-full btn-primary mb-4">
+                    Create Account
+                </button>
+
+                <p class="text-center text-secondary">
+                    Already have an account?
+                    <button type="button" onclick="closeRegisterModal(); openLoginModal();"
+                        class="text-purple-600 font-bold hover:underline">
+                        Login
+                    </button>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Product Detail Modal -->
+    <div id="productDetailModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Product Details</h2>
+                <button onclick="closeProductDetail()" class="text-2xl hover:text-red-500">&times;</button>
+            </div>
+
+            <div id="productDetailContent" class="grid md:grid-cols-2 gap-6">
+                <!-- Content will be dynamically loaded -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">🛒 Your Cart</h2>
+                <button onclick="closeCart()" class="text-2xl hover:text-red-500">&times;</button>
+            </div>
+
+            <div id="cartContent">
+                <!-- Cart items will be dynamically loaded -->
+            </div>
+
+            <div class="mt-6 p-4 bg-gray-100 rounded-lg" style="background-color: var(--bg-secondary);">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-lg font-bold">Total:</span>
+                    <span class="text-2xl font-bold text-purple-600" id="cartTotal">₹0</span>
+                </div>
+                <button onclick="proceedToCheckout()" class="w-full btn-primary">
+                    <i class="fas fa-credit-card mr-2"></i>Proceed to Checkout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wishlist Modal -->
+    <div id="wishlistModal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">❤️ Your Wishlist</h2>
+                <button onclick="closeWishlist()" class="text-2xl hover:text-red-500">&times;</button>
+            </div>
+
+            <div id="wishlistContent">
+                <!-- Wishlist items will be dynamically loaded -->
+            </div>
+        </div>
+    </div>
+
+    <!-- My Orders Modal -->
+    <div id="ordersModal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">📦 My Orders</h2>
+                <button onclick="closeMyOrders()" class="text-2xl hover:text-red-500">&times;</button>
+            </div>
+
+            <div id="ordersContent">
+                <!-- Orders will be dynamically loaded -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">⚙️ Settings</h2>
+                <button onclick="closeSettings()" class="text-2xl hover:text-red-500">&times;</button>
+            </div>
+
+            <div class="space-y-4">
+                <div class="p-4 border-2 rounded-lg border-color">
+                    <h3 class="font-bold mb-2">Profile Information</h3>
+                    <div class="space-y-2 text-sm text-secondary">
+                        <p><strong>Name:</strong> <span id="settingsName"></span></p>
+                        <p><strong>Roll Number:</strong> <span id="settingsRoll"></span></p>
+                        <p><strong>Branch:</strong> <span id="settingsBranch"></span></p>
+                        <p><strong>Year:</strong> <span id="settingsYear"></span></p>
+                        <p><strong>Phone:</strong> <span id="settingsPhone"></span></p>
+                        <p><strong>Role:</strong> <span id="settingsRole"></span></p>
+                    </div>
+                </div>
+
+                <div class="p-4 border-2 rounded-lg border-color">
+                    <h3 class="font-bold mb-2">Appearance</h3>
+                    <div class="flex items-center justify-between">
+                        <span>Dark Mode</span>
+                        <div class="dark-mode-toggle" onclick="toggleDarkMode()"></div>
+                    </div>
+                </div>
+
+                <div class="p-4 border-2 rounded-lg border-color">
+                    <h3 class="font-bold mb-2">Notifications</h3>
+                    <label class="flex items-center justify-between cursor-pointer">
+                        <span>Email Notifications</span>
+                        <input type="checkbox" class="w-5 h-5" checked>
+                    </label>
+                </div>
+
+                <button onclick="logout()"
+                    class="w-full bg-red-500 text-white py-3 rounded-lg font-bold hover:bg-red-600 transition">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Modal -->
+    <div id="dashboardModal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">📊 Dashboard</h2>
+                <button onclick="closeDashboard()" class="text-2xl hover:text-red-500">&times;</button>
+            </div>
+            <div id="dashboardContent"></div>
+        </div>
+    </div>
+
+    <!-- My Products Modal -->
+    <div id="myProductsModal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">🏷️ My Products</h2>
+                <button onclick="closeMyProducts()" class="text-2xl hover:text-red-500">&times;</button>
+            </div>
+            <div id="myProductsContent"></div>
+        </div>
+    </div>
+
+    <!-- Admin Orders Modal -->
+    <div id="adminOrdersModal" class="modal">
+        <div class="modal-content" style="max-width: 1000px;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">👑 Admin Order Management</h2>
+                <button onclick="closeAdminOrders()" class="text-2xl hover:text-red-500">&times;</button>
+            </div>
+            <div id="adminOrdersContent"></div>
+        </div>
+    </div>
+
+    <!-- Sell Product Modal -->
+    <div id="sellModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">📦 Sell Your Product</h2>
+                <button onclick="closeSellModal()" class="text-2xl hover:text-red-500">&times;</button>
+            </div>
+
+            <form id="sellForm" onsubmit="handleSellProduct(event)">
+                <div class="mb-4">
+                    <label class="block font-semibold mb-2 required">Product Title</label>
+                    <input type="text" id="productTitle" required
+                        class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
+                        placeholder="e.g., iPhone 13 Pro - Like New">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block font-semibold mb-2 required">Category</label>
+                        <select id="productCategory" required
+                            class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none">
+                            <option value="">Select Category</option>
+                            <option value="electronics">Electronics</option>
+                            <option value="books">Books & Notes</option>
+                            <option value="fashion">Fashion</option>
+                            <option value="furniture">Furniture</option>
+                            <option value="services">Services</option>
+                            <option value="sports">Sports</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold mb-2 required">Condition</label>
+                        <select id="productCondition" required
+                            class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none">
+                            <option value="">Select Condition</option>
+                            <option value="New">New</option>
+                            <option value="Like New">Like New</option>
+                            <option value="Good">Good</option>
+                            <option value="Fair">Fair</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block font-semibold mb-2 required">Price (₹)</label>
+                        <input type="number" id="productPrice" required min="1"
+                            class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
+                            placeholder="5000">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-2">Original Price (₹)</label>
+                        <input type="number" id="productOriginalPrice" min="1"
+                            class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
+                            placeholder="Optional">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block font-semibold mb-2 required">Quantity</label>
+                    <input type="number" id="productQuantity" required min="1" value="1"
+                        class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
+                        placeholder="Available quantity">
+                </div>
+
+                <div class="mb-4">
+                    <label class="block font-semibold mb-2 required">Description (Max 200 chars)</label>
+                    <textarea id="productDescription" required rows="4" maxlength="200"
+                        class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
+                        placeholder="Describe your product in detail..."></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block font-semibold mb-2 required">Upload Images</label>
+                    <div class="image-upload-area" onclick="document.getElementById('productImages').click()">
+                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                        <p class="text-gray-600 font-medium">Click to upload images</p>
+                        <p class="text-sm text-secondary mt-1">Maximum 5 images (JPG, PNG, WebP)</p>
+                    </div>
+                    <input type="file" id="productImages" accept="image/*" multiple hidden
+                        onchange="previewImages(event)">
+                    <div id="imagePreview" class="image-preview"></div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block font-semibold mb-2">Location on Campus</label>
+                    <input type="text" id="productLocation"
+                        class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
+                        placeholder="e.g., North Campus, Hostel Block A">
+                </div>
+
+                <button type="submit" class="w-full btn-primary">
+                    <i class="fas fa-check mr-2"></i>List Product
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal (Secret) -->
+    <div id="adminLoginModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">👑 Admin Portal</h2>
+                <button onclick="closeAdminLogin()" class="text-2xl hover:text-red-500">&times;</button>
+            </div>
+            <form onsubmit="handleAdminLogin(event)">
+                <div class="mb-4">
+                    <label class="block font-semibold mb-2">Secret Code</label>
+                    <input type="password" id="adminSecretCode" required
+                        class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
+                        placeholder="Enter secret code">
+                </div>
+                <div class="mb-6">
+                    <label class="block font-semibold mb-2">Admin Password</label>
+                    <input type="password" id="adminPassword" required
+                        class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
+                        placeholder="Enter admin password">
+                </div>
+                <button type="submit" class="w-full btn-primary">Access Admin Panel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">🔑 Reset Password</h2>
+                <button onclick="closeForgotPassword()" class="text-2xl hover:text-red-500">&times;</button>
+            </div>
+            <div id="forgotStep1">
+                <div class="mb-4">
+                    <label class="block font-semibold mb-2">Roll Number</label>
+                    <input type="text" id="forgotRoll"
+                        class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
+                        placeholder="Enter your roll number">
+                </div>
+                <div class="mb-4">
+                    <label class="block font-semibold mb-2">Phone Number</label>
+                    <input type="tel" id="forgotPhone" pattern="[0-9]{10}"
+                        class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
+                        placeholder="Registered phone number">
+                </div>
+                <button onclick="verifyForgotPassword()" class="w-full btn-primary">Verify & Reset</button>
+            </div>
+            <div id="forgotStep2" style="display: none;">
+                <div class="mb-4">
+                    <label class="block font-semibold mb-2">New Password</label>
+                    <input type="password" id="newPassword"
+                        class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
+                        placeholder="Enter new password">
+                    <p class="text-xs text-gray-500 mt-1">8-16 chars, 1 uppercase, 1 lowercase, 1 number</p>
+                </div>
+                <div class="mb-6">
+                    <label class="block font-semibold mb-2">Confirm Password</label>
+                    <input type="password" id="confirmNewPassword"
+                        class="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
+                        placeholder="Confirm new password">
+                </div>
+                <button onclick="resetPassword()" class="w-full btn-primary">Reset Password</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">💳 Payment Options</h2>
+                <button onclick="closePaymentModal()" class="text-2xl hover:text-red-500">&times;</button>
+            </div>
+            <div id="paymentDetails" class="mb-4 p-4 bg-gray-100 rounded-lg" style="background: var(--bg-secondary);">
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <button onclick="selectPayment('COD')" id="codBtn"
+                    class="p-4 border-2 rounded-lg text-center hover:border-purple-500 transition">
+                    <i class="fas fa-money-bill-wave text-3xl text-green-600 mb-2"></i>
+                    <div class="font-bold">Cash on Delivery</div>
+                    <div class="text-xs text-secondary">Pay when you receive</div>
+                </button>
+                <button onclick="selectPayment('UPI')" id="upiBtn"
+                    class="p-4 border-2 rounded-lg text-center hover:border-purple-500 transition">
+                    <i class="fas fa-qrcode text-3xl text-purple-600 mb-2"></i>
+                    <div class="font-bold">UPI Payment</div>
+                    <div class="text-xs text-secondary">Pay via QR code</div>
+                </button>
+            </div>
+            <div id="upiQRSection" style="display: none;" class="text-center mb-4">
+                <p class="font-bold mb-2">Scan QR Code to Pay</p>
+                <div class="inline-block p-4 bg-white rounded-lg">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=admin@campus&pn=CampusMart"
+                        alt="UPI QR" class="mx-auto">
+                </div>
+                <p class="text-sm text-secondary mt-2">UPI ID: admin@campusmart</p>
+            </div>
+            <button onclick="confirmPayment()" id="confirmPayBtn" class="w-full btn-primary" disabled>Confirm
+                Order</button>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Sample Products Data
+        const products = [
+            {
+                id: 1,
+                title: "MacBook Pro M1 - Excellent Condition",
+                price: 85000,
+                originalPrice: 120000,
+                image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400",
+                seller: "Rahul Sharma",
+                sellerPhone: "9876543210",
+                sellerRoll: "21CS001",
+                sellerAvatar: "https://ui-avatars.com/api/?name=Rahul+Sharma&background=667eea&color=fff",
+                rating: 4.8,
+                location: "North Campus",
+                condition: "Like New",
+                verified: true,
+                eco: false,
+                category: "electronics",
+                description: "MacBook Pro M1 chip with 8GB RAM and 256GB SSD. Barely used for 6 months. All accessories included. Perfect for coding and design work."
+            },
+            {
+                id: 2,
+                title: "Engineering Mathematics Textbook Set",
+                price: 800,
+                originalPrice: 2500,
+                image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400",
+                seller: "Priya Verma",
+                sellerPhone: "9876543211",
+                sellerRoll: "21CS002",
+                sellerAvatar: "https://ui-avatars.com/api/?name=Priya+Verma&background=f59e0b&color=fff",
+                rating: 5.0,
+                location: "South Campus",
+                condition: "Good",
+                verified: true,
+                eco: true,
+                category: "books",
+                description: "Complete set of Engineering Mathematics books for first year. All volumes included with solved examples and previous year papers."
+            },
+            {
+                id: 3,
+                title: "Gaming Chair - Almost New",
+                price: 8500,
+                originalPrice: 15000,
+                image: "https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=400",
+                seller: "Amit Patel",
+                sellerPhone: "9876543212",
+                sellerRoll: "21CS003",
+                sellerAvatar: "https://ui-avatars.com/api/?name=Amit+Patel&background=ec4899&color=fff",
+                rating: 4.6,
+                location: "East Campus",
+                condition: "Like New",
+                verified: true,
+                eco: false,
+                category: "furniture",
+                description: "Ergonomic gaming chair with lumbar support. Used for only 3 months. Very comfortable for long study sessions."
+            },
+            {
+                id: 4,
+                title: "Branded Backpack - College Edition",
+                price: 1200,
+                originalPrice: 2500,
+                image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400",
+                seller: "Sneha Das",
+                sellerPhone: "9876543213",
+                sellerRoll: "21CS004",
+                sellerAvatar: "https://ui-avatars.com/api/?name=Sneha+Das&background=10b981&color=fff",
+                rating: 4.9,
+                location: "West Campus",
+                condition: "Good",
+                verified: false,
+                eco: true,
+                category: "fashion",
+                description: "Spacious backpack perfect for college. Multiple compartments for laptop, books, and essentials."
+            }
+        ];
+
+        // Global Variables
+        let currentUser = null;
+        let cart = [];
+        let wishlist = [];
+        let notifications = [];
+        let orders = [];
+        let allPlatformOrders = [];
+        let earnings = { listingFees: 0, serviceFees: 0, total: 0 };
+        let currentCategory = 'all';
+        const ADMIN_SECRET = 'ADMIN2025';
+        const LISTING_FEE = 15;
+
+        // Calculate Service Fee (Tiered)
+        function calculateServiceFee(price) {
+            if (price <= 500) return Math.max(20, Math.round(price * 0.05));
+            if (price <= 2000) return Math.round(price * 0.05);
+            if (price <= 10000) return Math.round(price * 0.04);
+            if (price <= 30000) return Math.round(price * 0.03);
+            return Math.min(1000, Math.round(price * 0.02));
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function () {
+            checkAuth();
+            renderProducts();
+            loadDarkMode();
+            loadNotifications();
+        });
+
+        // Dark Mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        }
+
+        function loadDarkMode() {
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+            }
+        }
+
+        // Authentication
+        function checkAuth() {
+            const user = localStorage.getItem('campusMartUser');
+            if (user) {
+                currentUser = JSON.parse(user);
+                updateUIForLoggedInUser();
+                loadUserData();
+            } else {
+                updateUIForLoggedOutUser();
+            }
+        }
+
+        function updateUIForLoggedInUser() {
+            document.getElementById('loggedOutNav').classList.add('hidden');
+            document.getElementById('loggedInNav').classList.remove('hidden');
+            document.getElementById('loggedInNav').classList.add('flex');
+
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userRole').textContent = currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1);
+            document.getElementById('userAvatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=667eea&color=fff`;
+
+            // Update menu info
+            document.getElementById('menuUserName').textContent = currentUser.name;
+            document.getElementById('menuUserEmail').textContent = currentUser.email || currentUser.phone;
+        }
+
+        function updateUIForLoggedOutUser() {
+            document.getElementById('loggedOutNav').classList.remove('hidden');
+            document.getElementById('loggedInNav').classList.add('hidden');
+        }
+
+        // Load User Data
+        function loadUserData() {
+            cart = JSON.parse(localStorage.getItem(`cart_${currentUser.rollNumber}`) || '[]');
+            wishlist = JSON.parse(localStorage.getItem(`wishlist_${currentUser.rollNumber}`) || '[]');
+            orders = JSON.parse(localStorage.getItem(`orders_${currentUser.rollNumber}`) || '[]');
+            notifications = JSON.parse(localStorage.getItem(`notifications_${currentUser.rollNumber}`) || '[]');
+            allPlatformOrders = JSON.parse(localStorage.getItem('allPlatformOrders') || '[]');
+            earnings = JSON.parse(localStorage.getItem('platformEarnings') || '{"listingFees":0,"serviceFees":0,"total":0}');
+
+            updateCartBadge();
+            updateWishlistBadge();
+            updateNotificationBadge();
+        }
+
+        // Login Role Selection
+        function selectLoginRole(role, event) {
+            document.querySelectorAll('#loginModal .role-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+            document.getElementById('loginRole').value = role;
+
+            // Show/hide admin secret field
+            if (role === 'admin') {
+                document.getElementById('adminSecretField').style.display = 'block';
+                document.getElementById('regularLoginFields').style.display = 'none';
+            } else {
+                document.getElementById('adminSecretField').style.display = 'none';
+                document.getElementById('regularLoginFields').style.display = 'block';
+            }
+        }
+
+        // Handle Login
+        function handleLogin(event) {
+            event.preventDefault();
+
+            const role = document.getElementById('loginRole').value;
+            if (!role) {
+                showToast('Please select a role', 'error');
+                return;
+            }
+
+            // Admin Login
+            if (role === 'admin') {
+                const secretCode = document.getElementById('loginAdminSecret').value;
+                if (secretCode !== ADMIN_SECRET) {
+                    showToast('Invalid admin secret code', 'error');
+                    return;
+                }
+
+                // Check for admin in database
+                const users = JSON.parse(localStorage.getItem('campusMartUsers') || '[]');
+                const admin = users.find(u => u.role === 'admin' && u.secretCode === secretCode);
+
+                if (admin) {
+                    currentUser = admin;
+                    localStorage.setItem('campusMartUser', JSON.stringify(admin));
+                    closeLoginModal();
+                    showToast('Admin login successful! 👑', 'success');
+                    updateUIForLoggedInUser();
+                    loadUserData();
+                } else {
+                    showToast('Admin account not found', 'error');
+                }
+                return;
+            }
+
+            // Regular Login (Buyer/Seller)
+            const rollNumber = document.getElementById('loginRollNumber').value;
+            const phone = document.getElementById('loginPhone').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const users = JSON.parse(localStorage.getItem('campusMartUsers') || '[]');
+            const user = users.find(u =>
+                u.rollNumber === rollNumber &&
+                u.phone === phone &&
+                u.password === password &&
+                u.role !== 'admin'
+            );
+
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('campusMartUser', JSON.stringify(user));
+                closeLoginModal();
+                showToast('Login successful! Welcome back ' + user.name + ' 🎉', 'success');
+                updateUIForLoggedInUser();
+                loadUserData();
+            } else {
+                showToast('Invalid credentials. Please check roll number, phone and password', 'error');
+            }
+        }
+
+        // Register Role Selection
+        function selectRole(role, event) {
+            document.querySelectorAll('#registerModal .role-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+            document.getElementById('selectedRole').value = role;
+
+            // Show/hide admin secret field
+            if (role === 'admin') {
+                document.getElementById('adminSecretRegField').style.display = 'block';
+            } else {
+                document.getElementById('adminSecretRegField').style.display = 'none';
+            }
+        }
+
+        // Handle Register
+        function handleRegister(event) {
+            event.preventDefault();
+
+            const role = document.getElementById('selectedRole').value;
+            if (!role) {
+                showToast('Please select a role', 'error');
+                return;
+            }
+
+            // Admin Registration Check
+            if (role === 'admin') {
+                const secretCode = document.getElementById('regAdminSecret').value;
+                if (secretCode !== ADMIN_SECRET) {
+                    showToast('Invalid admin secret code. Only authorized admins can register.', 'error');
+                    return;
+                }
+            }
+
+            const userData = {
+                name: document.getElementById('regName').value,
+                rollNumber: document.getElementById('regRollNumber').value,
+                branch: document.getElementById('regBranch').value,
+                year: document.getElementById('regYear').value,
+                phone: document.getElementById('regPhone').value,
+                email: document.getElementById('regEmail').value,
+                password: document.getElementById('regPassword').value,
+                role: role,
+                secretCode: role === 'admin' ? ADMIN_SECRET : null,
+                registeredAt: new Date().toISOString()
+            };
+
+            // Enhanced Validation
+            if (!userData.name || !userData.rollNumber || !userData.branch || !userData.year || !userData.phone || !userData.password) { showToast('All fields are required', 'error'); return; }
+            if (!validateName(userData.name)) { showToast('Name: alphabets only, max 20 chars', 'error'); return; }
+            if (!validatePhone(userData.phone)) { showToast('Phone: 10 digits only', 'error'); return; }
+
+            const users = JSON.parse(localStorage.getItem('campusMartUsers') || '[]');
+            if (users.find(u => u.rollNumber === userData.rollNumber)) {
+                showToast('Roll number already registered', 'error');
+                return;
+            }
+
+            users.push(userData);
+            localStorage.setItem('campusMartUsers', JSON.stringify(users));
+
+            currentUser = userData;
+            localStorage.setItem('campusMartUser', JSON.stringify(userData));
+
+            closeRegisterModal();
+            showToast('Account created successfully! Welcome ' + userData.name + ' 🎉', 'success');
+            updateUIForLoggedInUser();
+            loadUserData();
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('campusMartUser');
+                currentUser = null;
+                cart = [];
+                wishlist = [];
+                notifications = [];
+                updateUIForLoggedOutUser();
+                closeSettings();
+                showToast('Logged out successfully', 'info');
+            }
+        }
+
+        // Product Detail
+        function showProductDetail(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const content = `
+                <div>
+                    <img src="${product.image}" alt="${product.title}" class="w-full h-64 object-cover rounded-lg mb-4">
+                    <div class="grid grid-cols-3 gap-2 mb-4">
+                        <img src="${product.image}" class="w-full h-20 object-cover rounded cursor-pointer opacity-50 hover:opacity-100">
+                        <img src="${product.image}" class="w-full h-20 object-cover rounded cursor-pointer opacity-50 hover:opacity-100">
+                        <img src="${product.image}" class="w-full h-20 object-cover rounded cursor-pointer opacity-50 hover:opacity-100">
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold mb-3 text-primary">${product.title}</h3>
+
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl font-bold text-purple-600">₹${product.price.toLocaleString()}</span>
+                        ${product.originalPrice ? `
+                            <span class="text-lg text-gray-500 line-through">₹${product.originalPrice.toLocaleString()}</span>
+                            <span class="badge bg-green-500 text-white">${Math.round((1 - product.price / product.originalPrice) * 100)}% OFF</span>
+                        ` : ''}
+                    </div>
+
+                    <div class="space-y-3 mb-4">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-tag text-purple-600"></i>
+                            <span class="text-secondary">Category:</span>
+                            <span class="font-semibold text-primary">${product.category}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-check-circle text-green-600"></i>
+                            <span class="text-secondary">Condition:</span>
+                            <span class="font-semibold text-primary">${product.condition}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-map-marker-alt text-red-600"></i>
+                            <span class="text-secondary">Location:</span>
+                            <span class="font-semibold text-primary">${product.location}</span>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-b py-4 mb-4 border-color">
+                        <h4 class="font-bold mb-2 text-primary">Seller Information</h4>
+                        ${(currentUser && (currentUser.role === 'admin' || currentUser.rollNumber === product.sellerRoll)) ? `
+                            <div class="flex items-center gap-3 mb-2">
+                                <img src="${product.sellerAvatar}" class="w-12 h-12 rounded-full">
+                                <div>
+                                    <div class="font-bold text-primary">${product.seller} <i class="fas fa-check-circle text-blue-500"></i></div>
+                                    <div class="text-sm text-secondary">Roll: ${product.sellerRoll}</div>
+                                    <div class="text-sm text-secondary">Phone: ${product.sellerPhone}</div>
+                                </div>
+                            </div>
+                        ` : `
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center text-white text-xl">
+                                    <i class="fas fa-user-shield"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-primary">Verified Seller <i class="fas fa-check-circle text-blue-500"></i></div>
+                                    <div class="text-sm text-green-600">✓ Verified by Admin</div>
+                                    <div class="text-xs text-secondary">Contact admin for seller details</div>
+                                </div>
+                            </div>
+                        `}
+                        <div class="flex items-center gap-1">
+                            <i class="fas fa-star text-yellow-500"></i>
+                            <span class="font-bold">${product.rating}</span>
+                            <span class="text-sm text-secondary">(24 reviews)</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h4 class="font-bold mb-2 text-primary">Description</h4>
+                        <p class="text-secondary">${product.description}</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="addToCart(${product.id})" class="btn-primary">
+                            <i class="fas fa-shopping-cart mr-2"></i>Add to Cart
+                        </button>
+                        <button onclick="buyNow(${product.id})" class="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition">
+                            <i class="fas fa-bolt mr-2"></i>Buy Now
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('productDetailContent').innerHTML = content;
+            document.getElementById('productDetailModal').style.display = 'block';
+        }
+
+        function closeProductDetail() {
+            document.getElementById('productDetailModal').style.display = 'none';
+        }
+
+        // Cart Functions
+        function addToCart(productId, event) {
+            if (event) event.stopPropagation();
+
+            if (!currentUser) {
+                showToast('Please login to add items to cart', 'error');
+                openLoginModal();
+                return;
+            }
+
+            const product = products.find(p => p.id === productId);
+            if (!cart.find(item => item.id === productId)) {
+                cart.push(product);
+                localStorage.setItem(`cart_${currentUser.rollNumber}`, JSON.stringify(cart));
+                updateCartBadge();
+                showToast(`${product.title.substring(0, 30)}... added to cart! 🛒`, 'success');
+            } else {
+                showToast('Product already in cart', 'info');
+            }
+        }
+
+        function buyNow(productId) {
+            if (!currentUser) {
+                showToast('Please login to buy products', 'error');
+                openLoginModal();
+                return;
+            }
+
+            addToCart(productId);
+            closeProductDetail();
+            openCart();
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            localStorage.setItem(`cart_${currentUser.rollNumber}`, JSON.stringify(cart));
+            updateCartBadge();
+            openCart(); // Refresh cart view
+            showToast('Item removed from cart', 'info');
+        }
+
+        function updateCartBadge() {
+            document.getElementById('cartCount').textContent = cart.length;
+        }
+
+        function openCart() {
+            if (!currentUser) {
+                showToast('Please login to view cart', 'error');
+                openLoginModal();
+                return;
+            }
+
+            if (cart.length === 0) {
+                document.getElementById('cartContent').innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fas fa-shopping-cart text-6xl text-gray-300 mb-4"></i>
+                        <p class="text-xl text-secondary">Your cart is empty</p>
+                        <button onclick="closeCart(); scrollToProducts();" class="mt-4 btn-primary">
+                            Browse Products
+                        </button>
+                    </div>
+                `;
+            } else {
+                const cartHTML = cart.map(item => `
+                    <div class="flex gap-4 p-4 border-b border-color">
+                        <img src="${item.image}" alt="${item.title}" class="w-20 h-20 object-cover rounded">
+                        <div class="flex-1">
+                            <h4 class="font-bold text-primary">${item.title}</h4>
+                            <p class="text-sm text-secondary">${item.condition}</p>
+                            <p class="text-lg font-bold text-purple-600">₹${item.price.toLocaleString()}</p>
+                        </div>
+                        <button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `).join('');
+
+                document.getElementById('cartContent').innerHTML = cartHTML;
+
+                const total = cart.reduce((sum, item) => sum + item.price, 0);
+                document.getElementById('cartTotal').textContent = `₹${total.toLocaleString()}`;
+            }
+
+            document.getElementById('cartModal').style.display = 'block';
+        }
+
+        function closeCart() {
+            document.getElementById('cartModal').style.display = 'none';
+        }
+
+        function proceedToCheckout() {
+            if (cart.length === 0) return;
+            if (currentUser.role === 'seller') {
+                showToast('Sellers cannot buy. Use your buyer account.', 'error');
+                return;
+            }
+            const total = cart.reduce((sum, i) => sum + i.price, 0);
+            showPaymentModal([...cart], total);
+        }
+
+        function finalizeCheckout(payment, paymentMethod) {
+            const users = JSON.parse(localStorage.getItem('campusMartUsers') || '[]');
+            const admins = users.filter(u => u.role === 'admin');
+
+            payment.items.forEach(item => {
+                const serviceFee = calculateServiceFee(item.price);
+                const totalPaid = item.price + serviceFee;
+                const sellerPayout = item.price - LISTING_FEE;
+
+                const order = {
+                    id: Date.now() + Math.random(),
+                    product: item,
+                    buyer: { name: currentUser.name, roll: currentUser.rollNumber, phone: currentUser.phone },
+                    seller: { name: item.seller, phone: item.sellerPhone, roll: item.sellerRoll },
+                    productPrice: item.price,
+                    serviceFee: serviceFee,
+                    totalPaid: totalPaid,
+                    listingFee: LISTING_FEE,
+                    sellerPayout: sellerPayout,
+                    paymentMethod: paymentMethod,
+                    status: 'pending',
+                    sellerAccepted: false,
+                    orderedAt: new Date().toISOString()
+                };
+
+                orders.push(order);
+                allPlatformOrders.push(order);
+                earnings.serviceFees += serviceFee;
+                earnings.listingFees += LISTING_FEE;
+                earnings.total = earnings.serviceFees + earnings.listingFees;
+
+                // Notify seller to accept
+                const sellerNotifs = JSON.parse(localStorage.getItem(`notifications_${item.sellerRoll}`) || '[]');
+                sellerNotifs.unshift({ id: Date.now(), title: '🛒 New Order - Accept?', message: `Someone wants "${item.title}". Accept to proceed.`, orderId: order.id, type: 'seller-accept', time: new Date().toISOString(), read: false });
+                localStorage.setItem(`notifications_${item.sellerRoll}`, JSON.stringify(sellerNotifs));
+
+                // Notify admins
+                admins.forEach(admin => {
+                    const an = JSON.parse(localStorage.getItem(`notifications_${admin.rollNumber}`) || '[]');
+                    an.unshift({ id: Date.now(), title: '📦 New Order', message: `"${item.title}" - Wait for seller accept`, time: new Date().toISOString(), read: false });
+                    localStorage.setItem(`notifications_${admin.rollNumber}`, JSON.stringify(an));
+                });
+                // Update inventory
+                const prodIdx = products.findIndex(p => p.id === item.id);
+                if (prodIdx > -1) {
+                    if (products[prodIdx].quantity > 1) {
+                        products[prodIdx].quantity -= 1;
+                    } else {
+                        // Remove if quantity is 1 (or 0)
+                        products.splice(prodIdx, 1);
+                    }
+                }
+                const savedProds = JSON.parse(localStorage.getItem('campusMartProducts') || '[]');
+                const savedIdx = savedProds.findIndex(p => p.id === item.id);
+                if (savedIdx > -1) {
+                    if (savedProds[savedIdx].quantity > 1) {
+                        savedProds[savedIdx].quantity -= 1;
+                    } else {
+                        savedProds.splice(savedIdx, 1);
+                    }
+                    localStorage.setItem('campusMartProducts', JSON.stringify(savedProds));
+                }
+            });
+
+            // Reload products after inventory update
+            renderProducts(currentCategory);
+
+            localStorage.setItem(`orders_${currentUser.rollNumber}`, JSON.stringify(orders));
+            localStorage.setItem('allPlatformOrders', JSON.stringify(allPlatformOrders));
+            localStorage.setItem('platformEarnings', JSON.stringify(earnings));
+
+            // Reload products after inventory update
+            renderProducts(currentCategory);
+
+            localStorage.setItem(`orders_${currentUser.rollNumber}`, JSON.stringify(orders));
+            localStorage.setItem('allPlatformOrders', JSON.stringify(allPlatformOrders));
+            localStorage.setItem('platformEarnings', JSON.stringify(earnings));
+
+            cart = [];
+            localStorage.setItem(`cart_${currentUser.rollNumber}`, JSON.stringify(cart));
+            updateCartBadge();
+
+            addNotification('Order Placed', `Paid via ${paymentMethod}. Waiting for seller to accept.`);
+            showToast(`Order placed! Payment: ${paymentMethod} 🎉`, 'success');
+            openMyOrders();
+        }
+
+        // Wishlist Functions
+        function toggleLike(productId, event) {
+            if (event) event.stopPropagation();
+
+            if (!currentUser) {
+                showToast('Please login to save products', 'error');
+                openLoginModal();
+                return;
+            }
+
+            const product = products.find(p => p.id === productId);
+            const index = wishlist.findIndex(item => item.id === productId);
+
+            if (index > -1) {
+                wishlist.splice(index, 1);
+                showToast('Removed from wishlist', 'info');
+            } else {
+                wishlist.push(product);
+                showToast('Added to wishlist! ❤️', 'success');
+                // Go to wishlist as requested
+                openWishlist();
+            }
+
+            localStorage.setItem(`wishlist_${currentUser.rollNumber}`, JSON.stringify(wishlist));
+            updateWishlistBadge();
+
+            // Update heart icon
+            if (event) {
+                const icon = event.target.closest('button').querySelector('i');
+                if (icon) {
+                    icon.classList.toggle('far');
+                    icon.classList.toggle('fas');
+                    icon.classList.toggle('text-red-500');
+                }
+            }
+        }
+
+        function updateWishlistBadge() {
+            document.getElementById('wishlistCount').textContent = wishlist.length;
+        }
+
+        function openWishlist() {
+            if (!currentUser) {
+                showToast('Please login to view wishlist', 'error');
+                openLoginModal();
+                return;
+            }
+
+            if (wishlist.length === 0) {
+                document.getElementById('wishlistContent').innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fas fa-heart text-6xl text-gray-300 mb-4"></i>
+                        <p class="text-xl text-secondary">Your wishlist is empty</p>
+                        <button onclick="closeWishlist(); scrollToProducts();" class="mt-4 btn-primary">
+                            Browse Products
+                        </button>
+                    </div>
+                `;
+            } else {
+                const wishlistHTML = wishlist.map(item => `
+                    <div class="flex gap-4 p-4 border-b border-color">
+                        <img src="${item.image}" alt="${item.title}" class="w-20 h-20 object-cover rounded cursor-pointer" onclick="closeWishlist(); showProductDetail(${item.id});">
+                        <div class="flex-1">
+                            <h4 class="font-bold text-primary cursor-pointer" onclick="closeWishlist(); showProductDetail(${item.id});">${item.title}</h4>
+                            <p class="text-sm text-secondary">${item.condition} | ${item.location}</p>
+                            <p class="text-lg font-bold text-purple-600">₹${item.price.toLocaleString()}</p>
+                            <button onclick="addToCart(${item.id})" class="mt-2 text-sm bg-purple-600 text-white px-4 py-1 rounded hover:bg-purple-700">
+                                Add to Cart
+                            </button>
+                        </div>
+                        <button onclick="toggleLike(${item.id})" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                    </div>
+                `).join('');
+
+                document.getElementById('wishlistContent').innerHTML = wishlistHTML;
+            }
+
+            document.getElementById('wishlistModal').style.display = 'block';
+        }
+
+        function closeWishlist() {
+            document.getElementById('wishlistModal').style.display = 'none';
+        }
+
+        // Orders Functions
+        function openMyOrders() {
+            if (!currentUser) {
+                showToast('Please login to view orders', 'error');
+                openLoginModal();
+                return;
+            }
+
+            if (orders.length === 0) {
+                document.getElementById('ordersContent').innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fas fa-shopping-bag text-6xl text-gray-300 mb-4"></i>
+                        <p class="text-xl text-secondary">No orders yet</p>
+                        <button onclick="closeMyOrders(); scrollToProducts();" class="mt-4 btn-primary">
+                            Start Shopping
+                        </button>
+                    </div>
+                `;
+            } else {
+                const ordersHTML = orders.map(order => {
+                    const statusClass = `status-${order.status}`;
+                    const statusIcon = order.status === 'delivered' ? 'fa-check-circle' :
+                        order.status === 'pending' ? 'fa-clock' :
+                            order.status === 'confirmed' ? 'fa-shipping-fast' : 'fa-times-circle';
+
+                    return `
+                        <div class="p-4 border-2 rounded-lg mb-4 border-color">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <h4 class="font-bold text-primary">${order.product.title}</h4>
+                                    <p class="text-sm text-secondary">Order ID: ${order.id.toString().substring(0, 15)}...</p>
+                                    <p class="text-sm text-secondary">Ordered: ${new Date(order.orderedAt).toLocaleString()}</p>
+                                </div>
+                                <span class="status-badge ${statusClass}">
+                                    <i class="fas ${statusIcon} mr-1"></i>${order.status.toUpperCase()}
+                                </span>
+                            </div>
+
+                                <img src="${order.product.image}" alt="${order.product.title}" class="w-16 h-16 object-cover rounded">
+                                <div class="flex-1">
+                                    <p class="text-sm text-secondary">Seller: Verified Seller ✓</p>
+                                    <p class="text-xs text-secondary">Contact admin for seller details</p>
+                                    <p class="text-lg font-bold text-purple-600">₹${(order.totalPaid || order.amount || order.product.price).toLocaleString()}</p>
+                                </div>
+                                ${order.status === 'pending' ? `
+                                    <button onclick="markAsDelivered('${order.id}')" class="text-sm bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                                        Mark Delivered
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                document.getElementById('ordersContent').innerHTML = ordersHTML;
+            }
+
+            document.getElementById('ordersModal').style.display = 'block';
+        }
+
+        function closeMyOrders() {
+            document.getElementById('ordersModal').style.display = 'none';
+        }
+
+        function markAsDelivered(orderId) {
+            const order = orders.find(o => o.id.toString() === orderId);
+            if (order) {
+                order.status = 'delivered';
+                order.deliveredAt = new Date().toISOString();
+                localStorage.setItem(`orders_${currentUser.rollNumber}`, JSON.stringify(orders));
+                addNotification('Order Delivered', `Your order for ${order.product.title} has been marked as delivered!`);
+                openMyOrders(); // Refresh view
+                showToast('Order marked as delivered! 🎉', 'success');
+            }
+        }
+
+        // Notifications
+        function loadNotifications() {
+            // Sample notifications
+            if (currentUser && notifications.length === 0) {
+                notifications = [
+                    {
+                        id: 1,
+                        title: 'Welcome!',
+                        message: 'Welcome to CampusMart! Start buying and selling today.',
+                        time: new Date().toISOString(),
+                        read: false
+                    },
+                    {
+                        id: 2,
+                        title: 'New Feature',
+                        message: 'Dark mode is now available! Toggle it from the navbar.',
+                        time: new Date().toISOString(),
+                        read: false
+                    }
+                ];
+            }
+            updateNotificationBadge();
+        }
+
+        function addNotification(title, message) {
+            notifications.unshift({
+                id: Date.now(),
+                title: title,
+                message: message,
+                time: new Date().toISOString(),
+                read: false
+            });
+            localStorage.setItem(`notifications_${currentUser.rollNumber}`, JSON.stringify(notifications));
+            updateNotificationBadge();
+        }
+
+        function updateNotificationBadge() {
+            const unread = notifications.filter(n => !n.read).length;
+            document.getElementById('notificationCount').textContent = unread;
+        }
+
+        function toggleNotifications() {
+            const panel = document.getElementById('notificationPanel');
+            const isVisible = panel.classList.contains('show');
+
+            // Close other panels
+            document.getElementById('userMenu').classList.remove('show');
+
+            if (isVisible) {
+                panel.classList.remove('show');
+            } else {
+                panel.classList.add('show');
+                renderNotifications();
+            }
+        }
+
+        function renderNotifications() {
+            if (notifications.length === 0) {
+                document.getElementById('notificationList').innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="fas fa-bell text-4xl text-gray-300 mb-2"></i>
+                        <p class="text-secondary">No notifications</p>
+                    </div>
+                `;
+            } else {
+                const notificationsHTML = notifications.map(notif => `
+                    <div class="notification-item ${notif.read ? '' : 'unread'}" onclick="markNotificationRead(${notif.id})">
+                        <h4 class="font-bold text-sm text-primary">${notif.title}</h4>
+                        <p class="text-sm text-secondary">${notif.message}</p>
+                        <p class="text-xs text-secondary mt-1">${new Date(notif.time).toLocaleTimeString()}</p>
+                    </div>
+                `).join('');
+
+                document.getElementById('notificationList').innerHTML = notificationsHTML;
+            }
+        }
+
+        function markNotificationRead(notifId) {
+            const notif = notifications.find(n => n.id === notifId);
+            if (notif) {
+                notif.read = true;
+                localStorage.setItem(`notifications_${currentUser.rollNumber}`, JSON.stringify(notifications));
+                updateNotificationBadge();
+                renderNotifications();
+            }
+        }
+
+        // User Menu
+        function toggleUserMenu() {
+            const menu = document.getElementById('userMenu');
+            const isVisible = menu.classList.contains('show');
+
+            // Close other panels
+            document.getElementById('notificationPanel').classList.remove('show');
+
+            if (isVisible) {
+                menu.classList.remove('show');
+            } else {
+                menu.classList.add('show');
+            }
+        }
+
+        // Settings
+        function openSettings() {
+            if (!currentUser) return;
+
+            document.getElementById('settingsName').textContent = currentUser.name;
+            document.getElementById('settingsRoll').textContent = currentUser.rollNumber;
+            document.getElementById('settingsBranch').textContent = currentUser.branch;
+            document.getElementById('settingsYear').textContent = currentUser.year;
+            document.getElementById('settingsPhone').textContent = currentUser.phone;
+            document.getElementById('settingsRole').textContent = currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1);
+
+            document.getElementById('userMenu').classList.remove('show');
+            document.getElementById('settingsModal').style.display = 'block';
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').style.display = 'none';
+        }
+
+        function openDashboard() {
+            document.getElementById('userMenu').classList.remove('show');
+            if (!currentUser) return;
+
+            let content = '';
+            const users = JSON.parse(localStorage.getItem('campusMartUsers') || '[]');
+
+            if (currentUser.role === 'admin') {
+                const pending = allPlatformOrders.filter(o => o.status === 'pending').length;
+                content = `
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div class="stat-card"><div class="text-3xl font-bold text-purple-600">${users.length}</div><div class="text-secondary">Total Users</div></div>
+                        <div class="stat-card"><div class="text-3xl font-bold text-blue-600">${products.length}</div><div class="text-secondary">Products</div></div>
+                        <div class="stat-card"><div class="text-3xl font-bold text-green-600">${allPlatformOrders.length}</div><div class="text-secondary">Total Orders</div></div>
+                        <div class="stat-card"><div class="text-3xl font-bold text-orange-600">${pending}</div><div class="text-secondary">Pending</div></div>
+                    </div>
+                    <div class="p-4 bg-green-100 rounded-lg mb-4" style="background: var(--bg-secondary);">
+                        <h3 class="font-bold mb-2">💰 Platform Earnings</h3>
+                        <p>Listing Fees: ₹${earnings.listingFees} | Service Fees: ₹${earnings.serviceFees}</p>
+                        <p class="text-lg font-bold text-green-600">Total: ₹${earnings.total}</p>
+                    </div>
+                    <button onclick="closeDashboard(); openAdminOrders();" class="w-full btn-primary">👑 Manage All Orders</button>
+                `;
+            } else if (currentUser.role === 'seller') {
+                const myProducts = products.filter(p => p.sellerRoll === currentUser.rollNumber);
+                const myOrders = allPlatformOrders.filter(o => o.seller.roll === currentUser.rollNumber);
+                content = `
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="stat-card"><div class="text-3xl font-bold text-purple-600">${myProducts.length}</div><div class="text-secondary">Products Listed</div></div>
+                        <div class="stat-card"><div class="text-3xl font-bold text-green-600">${myOrders.length}</div><div class="text-secondary">Orders Received</div></div>
+                    </div>
+                    <button onclick="closeDashboard(); openMyProducts();" class="w-full btn-primary mb-3">🏷️ My Products</button>
+                    <button onclick="closeDashboard(); openSellModal();" class="w-full border-2 border-purple-600 text-purple-600 py-3 rounded-lg font-bold">+ List New Product</button>
+                `;
+            } else {
+                content = `
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="stat-card"><div class="text-3xl font-bold text-purple-600">${cart.length}</div><div class="text-secondary">Cart Items</div></div>
+                        <div class="stat-card"><div class="text-3xl font-bold text-blue-600">${orders.length}</div><div class="text-secondary">My Orders</div></div>
+                    </div>
+                    <button onclick="closeDashboard(); openCart();" class="w-full btn-primary mb-3">🛒 View Cart</button>
+                    <button onclick="closeDashboard(); openMyOrders();" class="w-full border-2 border-purple-600 text-purple-600 py-3 rounded-lg font-bold">📦 My Orders</button>
+                `;
+            }
+
+            document.getElementById('dashboardContent').innerHTML = content;
+            document.getElementById('dashboardModal').style.display = 'block';
+        }
+
+        function closeDashboard() {
+            document.getElementById('dashboardModal').style.display = 'none';
+        }
+
+        function openMyProducts() {
+            document.getElementById('userMenu').classList.remove('show');
+            if (!currentUser) return;
+
+            let content = '';
+
+            if (currentUser.role === 'buyer') {
+                content = `
+                    <div class="text-center py-12">
+                        <i class="fas fa-store-slash text-6xl text-gray-300 mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2">You're logged in as a Buyer</h3>
+                        <p class="text-secondary mb-4">Register as a seller to list and sell products</p>
+                        <button onclick="closeMyProducts(); logout();" class="btn-primary">Switch to Seller Account</button>
+                    </div>
+                `;
+            } else {
+                const myProducts = products.filter(p => p.sellerRoll === currentUser.rollNumber);
+                if (myProducts.length === 0) {
+                    content = `
+                        <div class="text-center py-12">
+                            <i class="fas fa-box-open text-6xl text-gray-300 mb-4"></i>
+                            <h3 class="text-xl font-bold mb-2">No products listed yet</h3>
+                            <p class="text-secondary mb-4">Start selling and earn money!</p>
+                            <button onclick="closeMyProducts(); openSellModal();" class="btn-primary"><i class="fas fa-plus mr-2"></i>Add Your First Product</button>
+                        </div>
+                    `;
+                } else {
+                    content = myProducts.map(p => `
+                        <div class="flex gap-4 p-4 border-b border-color">
+                            <img src="${p.image}" class="w-20 h-20 object-cover rounded">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-primary">${p.title}</h4>
+                                <p class="text-sm text-secondary">${p.condition} | ${p.category}</p>
+                                <p class="text-lg font-bold text-purple-600">₹${p.price.toLocaleString()}</p>
+                            </div>
+                            <button onclick="deleteProduct(${p.id})" class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></button>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            document.getElementById('myProductsContent').innerHTML = content;
+            document.getElementById('myProductsModal').style.display = 'block';
+        }
+
+        function closeMyProducts() {
+            document.getElementById('myProductsModal').style.display = 'none';
+        }
+
+        function deleteProduct(productId) {
+            if (!confirm('Delete this product?')) return;
+            const idx = products.findIndex(p => p.id === productId);
+            if (idx > -1) products.splice(idx, 1);
+            const stored = JSON.parse(localStorage.getItem('campusMartProducts') || '[]');
+            const newStored = stored.filter(p => p.id !== productId);
+            localStorage.setItem('campusMartProducts', JSON.stringify(newStored));
+            openMyProducts();
+            renderProducts();
+            showToast('Product deleted', 'info');
+        }
+
+        // Admin Order Management
+        function openAdminOrders() {
+            if (!currentUser || currentUser.role !== 'admin') return;
+
+            if (allPlatformOrders.length === 0) {
+                document.getElementById('adminOrdersContent').innerHTML = '<div class="text-center py-12"><i class="fas fa-clipboard-list text-6xl text-gray-300 mb-4"></i><p class="text-secondary">No orders yet</p></div>';
+            } else {
+                const html = allPlatformOrders.map(o => {
+                    const statusText = o.status.replace(/-/g, ' ');
+                    let actions = '';
+                    if (o.status === 'pending') actions = `<button onclick="updateOrderStatus('${o.id}', 'seller-contacted')" class="text-xs bg-blue-500 text-white px-3 py-1 rounded mr-2">Contact Seller</button><button onclick="updateOrderStatus('${o.id}', 'cancelled')" class="text-xs bg-red-500 text-white px-3 py-1 rounded">Cancel</button>`;
+                    else if (o.status === 'seller-contacted') actions = `<button onclick="updateOrderStatus('${o.id}', 'seller-delivered-to-admin')" class="text-xs bg-green-500 text-white px-3 py-1 rounded">Product Received</button>`;
+                    else if (o.status === 'seller-delivered-to-admin') actions = `<button onclick="updateOrderStatus('${o.id}', 'buyer-notified')" class="text-xs bg-purple-500 text-white px-3 py-1 rounded">Notify Buyer</button>`;
+                    else if (o.status === 'buyer-notified') actions = `<button onclick="updateOrderStatus('${o.id}', 'completed')" class="text-xs bg-green-600 text-white px-3 py-1 rounded">Complete</button>`;
+
+                    return `
+                        <div class="p-4 border-2 rounded-lg mb-4 border-color">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-bold">${o.product.title}</h4>
+                                <span class="status-badge status-${o.status}">${statusText}</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 text-sm mb-2">
+                                <div><strong>Buyer:</strong> ${o.buyer.name} (${o.buyer.roll}) - ${o.buyer.phone}</div>
+                                <div><strong>Seller:</strong> ${o.seller.name} (${o.seller.roll}) - ${o.seller.phone}</div>
+                            </div>
+                            <div class="text-sm mb-2"><strong>Price:</strong> ₹${o.productPrice} + ₹${o.serviceFee} fee = <strong class="text-purple-600">₹${o.totalPaid}</strong> | Seller gets: ₹${o.sellerPayout}</div>
+                            <div>${actions}</div>
+                        </div>
+                    `;
+                }).join('');
+                document.getElementById('adminOrdersContent').innerHTML = html;
+            }
+            document.getElementById('adminOrdersModal').style.display = 'block';
+        }
+
+        function closeAdminOrders() {
+            document.getElementById('adminOrdersModal').style.display = 'none';
+        }
+
+        function updateOrderStatus(orderId, newStatus) {
+            const order = allPlatformOrders.find(o => o.id.toString() === orderId.toString());
+            if (!order) return;
+            order.status = newStatus;
+            localStorage.setItem('allPlatformOrders', JSON.stringify(allPlatformOrders));
+
+            // Update buyer's order copy
+            const buyerOrders = JSON.parse(localStorage.getItem(`orders_${order.buyer.roll}`) || '[]');
+            const bo = buyerOrders.find(o => o.id.toString() === orderId.toString());
+            if (bo) { bo.status = newStatus; localStorage.setItem(`orders_${order.buyer.roll}`, JSON.stringify(buyerOrders)); }
+
+            // Notify buyer
+            const notifsB = JSON.parse(localStorage.getItem(`notifications_${order.buyer.roll}`) || '[]');
+            notifsB.unshift({ id: Date.now(), title: 'Order Update', message: `Your order "${order.product.title}" is now: ${newStatus}`, time: new Date().toISOString(), read: false });
+            localStorage.setItem(`notifications_${order.buyer.roll}`, JSON.stringify(notifsB));
+
+            showToast('Order status updated', 'success');
+            openAdminOrders();
+        }
+
+        // Product Rendering
+        function renderProducts(category = 'all') {
+            const container = document.getElementById('products-container');
+            const filtered = category === 'all' ? products : products.filter(p => p.category === category);
+
+            container.innerHTML = filtered.map(product => {
+                const isInWishlist = wishlist.find(item => item.id === product.id);
+                // Added fa-heart
+                const heartClass = isInWishlist ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600';
+
+                // Variables must be declared before return
+                const priceDisplay = `₹${product.price.toLocaleString()}`;
+                const quantityBadge = product.quantity && product.quantity > 1 ? `<span class="badge bg-gray-200 text-gray-700 ml-2">${product.quantity} left</span>` : '';
+
+                // Admin Delete Button
+                const deleteBtn = (currentUser && currentUser.role === 'admin') ?
+                    `<button onclick="deleteProduct(${product.id}, event)" class="absolute top-2 right-12 z-10 bg-white p-2 text-red-500 rounded-full shadow-md hover:bg-red-50"><i class="fas fa-trash"></i></button>` : '';
+
+                // Buy/Cart Buttons (Hidden for Admin/Seller)
+                const actionButtons = (currentUser && (currentUser.role === 'admin' || currentUser.role === 'seller')) ?
+                    '' :
+                    `<button onclick="addToCart(${product.id}, event)" class="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition">
+                        <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
+                    </button>`;
+
+                return `
+                    <div class="card rounded-xl overflow-hidden cursor-pointer" onclick="showProductDetail(${product.id})">
+                        <div class="relative">
+                            <img src="${product.image}" alt="${product.title}" class="product-img">
+                            ${product.eco ? '<span class="absolute top-2 left-2 badge bg-green-500 text-white">♻️ Eco</span>' : ''}
+                            ${deleteBtn}
+                            ${product.condition === 'New' ? '<span class="absolute top-2 right-2 badge bg-blue-500 text-white">NEW</span>' : ''}
+                            <button onclick="toggleLike(${product.id}, event)" class="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-md hover:scale-110 transition">
+                                <i class="${heartClass} text-xl"></i>
+                            </button>
+                        </div>
+
+                        <div class="p-4">
+                            <h3 class="font-bold text-lg mb-2 line-clamp-2 text-primary">${product.title}</h3>
+
+                            <div class="flex items-center gap-2 mb-3">
+                                <img src="${product.sellerAvatar}" class="w-6 h-6 rounded-full">
+                                <span class="text-sm text-secondary">${product.seller}</span>
+                                ${product.verified ? '<span class="text-blue-500 text-sm">✓</span>' : ''}
+                            </div>
+
+                            <div class="flex items-center gap-2 text-sm text-secondary mb-3">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>${product.location}</span>
+                            </div>
+
+                            <div class="flex items-center justify-between mb-3">
+                                <div>
+                                    <span class="text-2xl font-bold text-purple-600">${priceDisplay}</span>
+                                    ${quantityBadge}
+                                    ${product.originalPrice ? `<div class="text-xs text-gray-500 line-through">₹${product.originalPrice.toLocaleString()}</div>` : ''}
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i class="fas fa-star text-yellow-500 text-sm"></i>
+                                    <span class="font-semibold text-sm">${product.rating}</span>
+                                </div>
+                            </div>
+
+                            ${actionButtons}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterCategory(category, event) {
+            currentCategory = category;
+            document.querySelectorAll('.category-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            renderProducts(category);
+        }
+
+        function searchProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const container = document.getElementById('products-container');
+
+            const filtered = products.filter(p =>
+                (p.title && p.title.toLowerCase().includes(query)) ||
+                (p.seller && p.seller.toLowerCase().includes(query)) ||
+                (p.category && p.category.toLowerCase().includes(query))
+            );
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="col-span-full text-center py-12 text-secondary"><i class="fas fa-search text-4xl mb-4"></i><p class="text-xl">No products found</p></div>';
+            } else {
+                currentCategory = 'all';
+                container.innerHTML = filtered.map(product => {
+                    const isInWishlist = wishlist.find(item => item.id === product.id);
+                    const heartClass = isInWishlist ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600';
+
+                    const priceDisplay = `₹${product.price.toLocaleString()}`;
+                    const quantityBadge = product.quantity && product.quantity > 1 ? `<span class="badge bg-gray-200 text-gray-700 ml-2">${product.quantity} left</span>` : '';
+
+                    // Admin Delete Button
+                    const deleteBtn = (currentUser && currentUser.role === 'admin') ?
+                        `<button onclick="deleteProduct(${product.id}, event)" class="absolute top-2 right-12 z-10 bg-white p-2 text-red-500 rounded-full shadow-md hover:bg-red-50"><i class="fas fa-trash"></i></button>` : '';
+
+                    // Buy/Cart Buttons (Hidden for Admin/Seller)
+                    const actionButtons = (currentUser && (currentUser.role === 'admin' || currentUser.role === 'seller')) ?
+                        '' :
+                        `<button onclick="addToCart(${product.id}, event)" class="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition">
+                        <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
+                    </button>`;
+
+                    return `
+                    <div class="card rounded-xl overflow-hidden cursor-pointer" onclick="showProductDetail(${product.id})">
+                        <div class="relative">
+                            <img src="${product.image}" alt="${product.title}" class="product-img">
+                            ${product.eco ? '<span class="absolute top-2 left-2 badge bg-green-500 text-white">♻️ Eco</span>' : ''}
+                            ${deleteBtn}
+                            ${product.condition === 'New' ? '<span class="absolute top-2 right-2 badge bg-blue-500 text-white">NEW</span>' : ''}
+                            <button onclick="toggleLike(${product.id}, event)" class="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-md hover:scale-110 transition">
+                                <i class="${heartClass} text-xl"></i>
+                            </button>
+                        </div>
+
+                        <div class="p-4">
+                            <h3 class="font-bold text-lg mb-2 line-clamp-2 text-primary">${product.title}</h3>
+
+                            <div class="flex items-center gap-2 mb-3">
+                                <img src="${product.sellerAvatar}" class="w-6 h-6 rounded-full">
+                                <span class="text-sm text-secondary">${product.seller}</span>
+                                ${product.verified ? '<span class="text-blue-500 text-sm">✓</span>' : ''}
+                            </div>
+
+                            <div class="flex items-center gap-2 text-sm text-secondary mb-3">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>${product.location}</span>
+                            </div>
+
+                            <div class="flex items-center justify-between mb-3">
+                                <div>
+                                    <span class="text-2xl font-bold text-purple-600">${priceDisplay}</span>
+                                    ${quantityBadge}
+                                    ${product.originalPrice ? `<div class="text-xs text-gray-500 line-through">₹${product.originalPrice.toLocaleString()}</div>` : ''}
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i class="fas fa-star text-yellow-500 text-sm"></i>
+                                    <span class="font-semibold text-sm">${product.rating}</span>
+                                </div>
+                            </div>
+
+                            ${actionButtons}
+                        </div>
+                    </div>
+                `;
+                }).join('');
+            }
+        }
+
+        // Sell Product
+        function openSellModal() {
+            if (!currentUser) {
+                showToast('Please login to sell products', 'error');
+                openLoginModal();
+                return;
+            }
+            if (currentUser.role === 'buyer') {
+                showToast('Only sellers can list products. Please register as a seller.', 'error');
+                return;
+            }
+            document.getElementById('sellModal').style.display = 'block';
+        }
+
+        function closeSellModal() {
+            document.getElementById('sellModal').style.display = 'none';
+        }
+
+        function handleSellProduct(event) {
+            event.preventDefault();
+
+            const productData = {
+                id: Date.now(),
+                title: document.getElementById('productTitle').value,
+                category: document.getElementById('productCategory').value,
+                condition: document.getElementById('productCondition').value,
+                price: parseInt(document.getElementById('productPrice').value),
+                quantity: parseInt(document.getElementById('productQuantity').value) || 1,
+                originalPrice: parseInt(document.getElementById('productOriginalPrice').value) || null,
+                description: document.getElementById('productDescription').value,
+                location: document.getElementById('productLocation').value || 'Campus',
+                seller: currentUser.name,
+                sellerPhone: currentUser.phone,
+                sellerRoll: currentUser.rollNumber,
+                sellerAvatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=667eea&color=fff`,
+                rating: 0,
+                verified: true,
+                eco: false,
+                image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400"
+            };
+
+            products.push(productData);
+
+            const userProducts = JSON.parse(localStorage.getItem('campusMartProducts') || '[]');
+            userProducts.push(productData);
+            localStorage.setItem('campusMartProducts', JSON.stringify(userProducts));
+
+            closeSellModal();
+            showToast('Product listed successfully! 🎉', 'success');
+            renderProducts();
+
+            document.getElementById('sellForm').reset();
+            document.getElementById('imagePreview').innerHTML = '';
+        }
+
+        function previewImages(event) {
+            const files = event.target.files;
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+
+            if (files.length > 5) {
+                showToast('Maximum 5 images allowed', 'error');
+                event.target.value = '';
+                return;
+            }
+
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Utility Functions
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+
+            const icons = {
+                success: 'fa-check-circle',
+                error: 'fa-exclamation-circle',
+                info: 'fa-info-circle'
+            };
+
+            toast.innerHTML = `<i class="fas ${icons[type]} mr-2"></i> ${message}`;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideInRight 0.3s ease reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function scrollToProducts() {
+            document.getElementById('productsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Modal Functions
+        function openLoginModal() {
+            document.getElementById('loginModal').style.display = 'block';
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+
+        function openRegisterModal() {
+            document.getElementById('registerModal').style.display = 'block';
+        }
+
+        function closeRegisterModal() {
+            document.getElementById('registerModal').style.display = 'none';
+        }
+
+        // Close modals on outside click
+        window.onclick = function (event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+
+            // Close dropdowns when clicking outside
+            if (!event.target.closest('#userMenu') && !event.target.closest('.cursor-pointer')) {
+                document.getElementById('userMenu').classList.remove('show');
+                document.getElementById('notificationPanel').classList.remove('show');
+            }
+        }
+
+        // ===== NEW PHASE 2 FUNCTIONS =====
+
+        // Logo click counter for secret admin access
+        let logoClickCount = 0;
+        let logoClickTimer = null;
+        function handleLogoClick() {
+            logoClickCount++;
+            if (logoClickTimer) clearTimeout(logoClickTimer);
+            logoClickTimer = setTimeout(() => { logoClickCount = 0; }, 2000);
+            if (logoClickCount >= 5) {
+                logoClickCount = 0;
+                openAdminLogin();
+            }
+        }
+
+        // Admin Login Functions
+        const ADMIN_PASSWORD = 'Admin@123';
+        function openAdminLogin() {
+            document.getElementById('adminLoginModal').style.display = 'block';
+        }
+        function closeAdminLogin() {
+            document.getElementById('adminLoginModal').style.display = 'none';
+            document.getElementById('adminSecretCode').value = '';
+            document.getElementById('adminPassword').value = '';
+        }
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const secret = document.getElementById('adminSecretCode').value;
+            const pass = document.getElementById('adminPassword').value;
+            if (secret !== ADMIN_SECRET) { showToast('Invalid secret code', 'error'); return; }
+            if (pass !== ADMIN_PASSWORD) { showToast('Invalid admin password', 'error'); return; }
+            currentUser = { name: 'Admin', role: 'admin', rollNumber: 'ADMIN001', phone: '0000000000' };
+            localStorage.setItem('campusMartUser', JSON.stringify(currentUser));
+            loadUserData();
+            updateUIForLoggedInUser();
+            closeAdminLogin();
+            showToast('Welcome Admin! 👑', 'success');
+        }
+
+        // Forgot Password Functions
+        let forgotUserData = null;
+        function openForgotPassword() {
+            document.getElementById('forgotPasswordModal').style.display = 'block';
+            document.getElementById('forgotStep1').style.display = 'block';
+            document.getElementById('forgotStep2').style.display = 'none';
+        }
+        function closeForgotPassword() {
+            document.getElementById('forgotPasswordModal').style.display = 'none';
+            forgotUserData = null;
+        }
+        function verifyForgotPassword() {
+            const roll = document.getElementById('forgotRoll').value.trim();
+            const phone = document.getElementById('forgotPhone').value.trim();
+            if (!roll || !phone) { showToast('Enter both roll and phone', 'error'); return; }
+            const users = JSON.parse(localStorage.getItem('campusMartUsers') || '[]');
+            const user = users.find(u => u.rollNumber === roll && u.phone === phone);
+            if (!user) { showToast('No matching account found', 'error'); return; }
+            forgotUserData = user;
+            document.getElementById('forgotStep1').style.display = 'none';
+            document.getElementById('forgotStep2').style.display = 'block';
+            showToast('Verified! Set new password', 'success');
+        }
+        function resetPassword() {
+            const newPass = document.getElementById('newPassword').value;
+            const confirm = document.getElementById('confirmNewPassword').value;
+            if (!validatePassword(newPass)) { showToast('Password must be 8-16 chars, 1 upper, 1 lower, 1 number, start with letter', 'error'); return; }
+            if (newPass !== confirm) { showToast('Passwords do not match', 'error'); return; }
+            const users = JSON.parse(localStorage.getItem('campusMartUsers') || '[]');
+            const idx = users.findIndex(u => u.rollNumber === forgotUserData.rollNumber && u.role === forgotUserData.role);
+            if (idx > -1) { users[idx].password = newPass; localStorage.setItem('campusMartUsers', JSON.stringify(users)); }
+            closeForgotPassword();
+            showToast('Password reset successful! 🎉', 'success');
+        }
+
+        // Payment Functions
+        let pendingPayment = null;
+        let selectedPaymentMethod = null;
+        function showPaymentModal(cartItems, total) {
+            pendingPayment = { items: cartItems, total: total };
+            const serviceFee = cartItems.reduce((sum, i) => sum + calculateServiceFee(i.price), 0);
+            const grandTotal = total + serviceFee;
+            document.getElementById('paymentDetails').innerHTML = `
+                <div class="flex justify-between"><span>Subtotal:</span><span>₹${total}</span></div>
+                <div class="flex justify-between"><span>Service Fee:</span><span>₹${serviceFee}</span></div>
+                <div class="flex justify-between font-bold text-lg mt-2 pt-2 border-t"><span>Total:</span><span class="text-purple-600">₹${grandTotal}</span></div>
+            `;
+            pendingPayment.grandTotal = grandTotal;
+            pendingPayment.serviceFee = serviceFee;
+            document.getElementById('paymentModal').style.display = 'block';
+            selectedPaymentMethod = null;
+            document.getElementById('confirmPayBtn').disabled = true;
+            document.getElementById('upiQRSection').style.display = 'none';
+            document.getElementById('codBtn').classList.remove('border-purple-500', 'bg-purple-50');
+            document.getElementById('upiBtn').classList.remove('border-purple-500', 'bg-purple-50');
+        }
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+            pendingPayment = null;
+        }
+        function selectPayment(method) {
+            selectedPaymentMethod = method;
+            document.getElementById('confirmPayBtn').disabled = false;
+            document.getElementById('codBtn').classList.remove('border-purple-500', 'bg-purple-50');
+            document.getElementById('upiBtn').classList.remove('border-purple-500', 'bg-purple-50');
+            if (method === 'COD') {
+                document.getElementById('codBtn').classList.add('border-purple-500', 'bg-purple-50');
+                document.getElementById('upiQRSection').style.display = 'none';
+            } else {
+                document.getElementById('upiBtn').classList.add('border-purple-500', 'bg-purple-50');
+                document.getElementById('upiQRSection').style.display = 'block';
+            }
+        }
+        function confirmPayment() {
+            if (!selectedPaymentMethod || !pendingPayment) return;
+            closePaymentModal();
+            closeCart();
+            finalizeCheckout(pendingPayment, selectedPaymentMethod);
+        }
+
+        // Validation Functions
+        function validatePassword(pass) {
+            // Min 6 chars
+            return pass.length >= 6;
+        }
+        function validateName(name) {
+            // Alphabets only, max 20
+            return /^[a-zA-Z\s]{1,20}$/.test(name);
+        }
+        function validatePhone(phone) {
+            // Numbers only, 10 digits
+            return /^[0-9]{10}$/.test(phone);
+        }
+
+        // Toggle Password Visibility
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+
+        // Role-based UI helpers
+        function canBuy() { return currentUser && currentUser.role === 'buyer'; }
+        function canSell() { return currentUser && (currentUser.role === 'seller' || currentUser.role === 'admin'); }
+
+        // Seller Accept Order
+        function sellerAcceptOrder(orderId) {
+            const order = allPlatformOrders.find(o => o.id.toString() === orderId.toString());
+            if (!order) return;
+            order.sellerAccepted = true;
+            order.status = 'seller-contacted';
+            localStorage.setItem('allPlatformOrders', JSON.stringify(allPlatformOrders));
+
+            // Notify admin
+            const users = JSON.parse(localStorage.getItem('campusMartUsers') || '[]');
+            users.filter(u => u.role === 'admin').forEach(admin => {
+                const an = JSON.parse(localStorage.getItem(`notifications_${admin.rollNumber}`) || '[]');
+                an.unshift({ id: Date.now(), title: '✅ Seller Accepted', message: `Seller accepted "${order.product.title}"`, time: new Date().toISOString(), read: false });
+                localStorage.setItem(`notifications_${admin.rollNumber}`, JSON.stringify(an));
+            });
+
+            // Notify buyer
+            const bn = JSON.parse(localStorage.getItem(`notifications_${order.buyer.roll}`) || '[]');
+            bn.unshift({ id: Date.now(), title: '📦 Order Accepted', message: `Seller accepted your order for "${order.product.title}"`, time: new Date().toISOString(), read: false });
+            localStorage.setItem(`notifications_${order.buyer.roll}`, JSON.stringify(bn));
+
+            showToast('Order accepted! 🎉', 'success');
+            renderNotifications();
+        }
+
+        // Seller: Send cart to buyer account
+        function sendCartToBuyer() {
+            if (!currentUser || currentUser.role !== 'seller') return;
+            const buyerCart = JSON.parse(localStorage.getItem(`cart_${currentUser.rollNumber}_buyer`) || '[]');
+            const merged = [...buyerCart, ...cart];
+            localStorage.setItem(`cart_${currentUser.rollNumber}_buyer`, JSON.stringify(merged));
+            cart = [];
+            localStorage.setItem(`cart_${currentUser.rollNumber}`, JSON.stringify(cart));
+            updateCartBadge();
+            showToast('Cart sent to your buyer account!', 'success');
+            closeCart();
+        }
+
+        // Notification click handler
+        function handleNotificationClick(notif) {
+            if (notif.type === 'seller-accept' && currentUser.role === 'seller') {
+                sellerAcceptOrder(notif.orderId);
+            } else if (notif.title.includes('Order')) {
+                openMyOrders();
+            }
+            markNotificationRead(notif.id);
+        }
+    </script>
+</body>
+
+</html>
+
